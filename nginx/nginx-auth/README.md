@@ -10,3 +10,32 @@
 6. Учетка `design` не должна иметь доступ на другие пути, тоже самое касается других учеток.
 
 ---
+
+### Ответ
+
+```
+server {
+    listen 8080;
+    server_name example.com;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+        try_files $uri $uri/ =404;
+    }
+
+    location /images {
+        auth_basic "Private Images";
+        auth_basic_user_file /var/www/cats_passwd;
+
+        alias /var/www/cats;
+    }
+
+    location /gifs {
+        auth_basic "Private Gifs";
+        auth_basic_user_file /var/www/gifs_passwd;
+
+        alias /var/www/gifs;
+    }
+}
+```

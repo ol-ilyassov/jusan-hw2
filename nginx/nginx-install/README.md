@@ -114,3 +114,25 @@ curl http://127.0.0.1
 ---
 
 ### Ответ
+
+```
+cat /etc/os-release
+
+nano /etc/apt/sources.list.d/nginx.list
+
+sudo apt update
+sudo apt install -y gnupg2
+
+curl -sLO http://nginx.org/keys/nginx_signing.key
+sudo apt-key add nginx_signing.key
+
+sudo apt update
+sudo apt install -y nginx
+
+# nginx version: nginx/1.27.2
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+curl http://127.0.0.1
+```
