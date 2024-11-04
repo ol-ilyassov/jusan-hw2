@@ -57,3 +57,41 @@ bash ./tester.sh
 ---
 
 ### Ответ
+
+```bash
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-dockerfile.conf
+
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-dockerfile.zip
+unzip jusan-dockerfile.zip
+
+nano Dockerfile
+```
+
+```dockerfile
+FROM nginx:mainline
+
+COPY ./jusan-dockerfile.conf /etc/nginx/conf.d/jusan-dockerfile.conf
+
+COPY ./jusan-dockerfile /var/www/jusan-dockerfile
+```
+
+```bash
+docker build -t nginx:jusan-dockerfile .
+
+docker images
+
+docker run -d \
+   -p 6060:80 \
+   --name jusan-dockerfile \
+   nginx:jusan-dockerfile
+
+docker exec -it jusan-dockerfile /bin/bash
+rm /etc/nginx/conf.d/default.conf
+nginx -s reload
+exit
+
+curl http://localhost:6060
+curl http://localhost:6060/dockerfilenline
+curl http://localhost:6060/secretle
+curl http://localhost:6060/jusan
+```

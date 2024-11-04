@@ -57,3 +57,72 @@ docker-compose logs api
 ---
 
 ### Ответ
+
+```bash
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-docker-mount.conf
+
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-docker-mount.zip
+unzip jusan-docker-mount.zip
+
+nano docker-compose.yml
+```
+
+```docker
+services:
+  api:
+    image: jusan-fastapi-final:dockerized
+    container_name: jusan-compose-final
+    restart: on-failure
+
+  nginx:
+    image: nginx:mainline
+    container_name: jusan-nginx-final
+    ports:
+      - "8787:80"
+    volumes:
+      - ./jusan-docker-mount.conf:/etc/nginx/conf.d/jusan-docker-mount.conf
+      - ./jusan-docker-mount:/var/www/example
+      - ./jusan-fastapi-final.conf:/etc/nginx/conf.d/jusan-fastapi-final.conf
+    depends_on:
+      - api
+    restart: on-failure
+```
+
+```bash
+nano jusan-fastapi-final.conf
+```
+
+```docker
+server {
+    listen 80;
+    server_name jusan.docker-compose;
+
+    location / {
+        proxy_pass http://api:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+```bash
+
+docker compose up -d
+
+docker exec -it jusan-nginx-final /bin/bash
+cd /etc/nginx/conf.d
+rm default.conf
+nginx -s reload
+exit
+
+curl -H "Host: example.com" http://127.0.0.1:8787
+
+curl -H "Host: jusan.docker-compose" http://127.0.0.1:8787/sum1n/3
+
+docker compose ps
+
+docker compose logs nginx
+docker compose logs api
+```

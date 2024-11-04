@@ -37,3 +37,23 @@ bash ./tester.sh
 ---
 
 ### Ответ
+
+```bash
+touch docker-compose.yml
+```
+
+```docker
+
+services:
+  api:
+    image: jusan-fastapi-final:dockerized
+    container_name: jusan-compose
+    ports:
+      - "8282:8080"
+```
+
+```bash
+docker compose up -d
+
+curl http://127.0.0.1:8282
+```

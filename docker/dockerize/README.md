@@ -41,4 +41,38 @@ bash ./tester.sh
 
 ### Ответ
 
+```bash
+# условное клонирование:
+cp -r ../../python/api/fastapi-final/api-project .
 
+cd docker/dockerize
+
+touch Dockerfile
+```
+
+```dockerfile
+FROM python:latest
+
+WORKDIR /app
+
+COPY ./api-project/requirements.txt requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+COPY ./api-project/main.py main.py
+
+EXPOSE 8080
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+```
+
+```bash
+docker build -t jusan-fastapi-final:dockerized .
+
+docker images
+
+docker run -d \
+   -p 8080:8080 \
+   --name jusan-dockerize \
+   jusan-fastapi-final:dockerized
+```

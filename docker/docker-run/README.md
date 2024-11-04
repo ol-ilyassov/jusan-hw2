@@ -55,3 +55,14 @@ bash ./tester.sh
 
 ### Ответ
 
+```bash
+docker run -d --name jsn-dkr-run -p 8888:80 nginx:mainline
+
+docker ps
+curl http://localhost:8888
+
+docker stop jsn-dkr-run
+curl http://localhost:8888
+
+docker ps -a
+```

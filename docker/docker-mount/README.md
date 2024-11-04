@@ -47,3 +47,26 @@ bash ./tester.sh
 ---
 
 ### Ответ
+
+```bash
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-docker-mount.conf
+
+curl -O https://stepik.org/media/attachments/lesson/686238/jusan-docker-mount.zip
+
+unzip jusan-docker-mount.zip 
+
+docker run -d \
+   --name jusan-docker-mount \
+   -p 9999:80 \
+   -v ./jusan-docker-mount.conf:/etc/nginx/conf.d/default.conf \
+   -v ./jusan-docker-mount:/var/www/example \
+   nginx:mainline
+
+curl http://localhost:9999
+
+curl http://localhost:9999/test
+
+curl http://localhost:9999/token
+
+docker logs jusan-docker-mount
+```
