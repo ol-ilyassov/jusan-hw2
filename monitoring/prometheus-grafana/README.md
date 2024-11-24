@@ -73,3 +73,97 @@
 ---
 
 ### Ответ
+
+```
+1. Использовался проект api-project в котором имеется Dockerfile собранный (build) в fastapi-app-image.
+```
+
+```Dockerfile
+# dockerfile для api
+
+FROM python:latest
+
+WORKDIR /app
+
+COPY ./requirements.txt requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+COPY ./main.py main.py
+
+EXPOSE 8080
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]
+```
+
+```Dockerfile
+# docker-compose.yml
+
+services:
+  api:
+    image: fastapi-app-image
+    ports:
+      - "8080:8080"
+    restart: always
+  prometheus:
+    image: prom/prometheus:v2.34.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
+  grafana:
+    image: grafana/grafana:8.4.5
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+```
+
+```yaml
+# prometheus.yml
+
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'api'
+    static_configs:
+      - targets: ['api:8080']
+
+```
+
+```
+http://localhost:8080/docs
+http://localhost:8080/metrics
+
+http://localhost:9090
+
+http://localhost:3000
+```
+
+```
+# HTTP requests per route
+rate(http_requests_total{job="api"}[5m])
+
+# HTTP average duration
+rate(http_requests_milliseconds_sum[5m]) / rate(http_requests_total[5m])
+
+# Calculator Errors
+rate(errors_calculator_total{job="api"}[5m])
+
+# Last Values
+last_sum1n{job="api", instance="api:8080"}
+last_fibo{job="api", instance="api:8080"}
+list_size{job="api", instance="api:8080"}
+last_calculator{job="api", instance="api:8080"}
+```
+
+```
+# Alert rule:
+# B: avg() OF query(A) IS ABOVE 0
+
+# Alert message:
+# Ошибки в роуте /calculator увеличились.
+```

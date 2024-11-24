@@ -43,3 +43,16 @@
 
 ### Ответ
 
+```bash
+curl http://127.0.0.1:8080/healthcheck
+
+curl http://127.0.0.1:8080/metrics
+
+curl http://127.0.0.1:8080/sum1n/3
+
+curl http://127.0.0.1:8080/sum1n/4
+
+curl http://127.0.0.1:8080/list
+
+curl http://127.0.0.1:8080/metrics
+```
